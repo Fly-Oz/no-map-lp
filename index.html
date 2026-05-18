@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NoMap – האפליקציה לישראלים שמטיילים בחו"ל</title>
+  <meta name="description" content="פיילוט סגור ל-3 שבועות בתאילנד. המלצות אמיתיות, טיפים מהשטח, חוויה שנבנית במיוחד סביב הצרכים של המטיילים הישראלים." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal:        #0891B2;
+      --teal-dark:   #0E7490;
+      --teal-deep:   #164E63;
+      --teal-light:  #ECFEFF;
+      --teal-mid:    #CFFAFE;
+      --coral:       #F97316;
+      --coral-light: #FFF7ED;
+      --bg:          #F8FAFC;
+      --white:       #FFFFFF;
+      --slate-50:    #F8FAFC;
+      --slate-100:   #F1F5F9;
+      --slate-200:   #E2E8F0;
+      --slate-400:   #94A3B8;
+      --slate-600:   #475569;
+      --slate-700:   #334155;
+      --slate-800:   #1E293B;
+      --slate-900:   #0F172A;
+      --radius:      14px;
+      --shadow-sm:   0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+      --shadow-md:   0 4px 16px rgba(0,0,0,.08), 0 2px 6px rgba(0,0,0,.05);
+      --shadow-lg:   0 10px 40px rgba(0,0,0,.10), 0 4px 12px rgba(0,0,0,.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Rubik', sans-serif;
+      background: var(--bg);
+      color: var(--slate-800);
+      line-height: 1.65;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── UTILITIES ─────────────────────────────────── */
+    .container { max-width: 1060px; margin: 0 auto; padding: 0 24px; }
+    .section    { padding: 80px 0; }
+    .section-sm { padding: 56px 0; }
+    .text-center { text-align: center; }
+    .tag {
+      display: inline-block;
+      background: var(--teal-light);
+      color: var(--teal-dark);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 4px 14px;
+      border-radius: 100px;
+      letter-spacing: .3px;
+      margin-bottom: 16px;
+    }
+    h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; line-height: 1.2; color: var(--slate-900); }
+    h2 { font-size: clamp(1.5rem, 3.5vw, 2.1rem); font-weight: 700; line-height: 1.25; color: var(--slate-900); }
+    h3 { font-size: 1.15rem; font-weight: 600; color: var(--slate-800); }
+    p  { color: var(--slate-600); }
+
+    /* ─── BUTTONS ───────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 100px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: all .2s ease;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--teal);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(8,145,178,.3);
+    }
+    .btn-primary:hover { background: var(--teal-dark); transform: translateY(-1px); box-shadow: 0 6px 24px rgba(8,145,178,.4); }
+    .btn-secondary {
+      background: transparent;
+      color: var(--teal-dark);
+      border: 2px solid var(--teal);
+    }
+    .btn-secondary:hover { background: var(--teal-light); transform: translateY(-1px); }
+    .btn-sm { padding: 10px 20px; font-size: 14px; }
+
+    /* ─── HEADER ────────────────────────────────────── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--slate-200);
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .logo {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--slate-900);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+    .logo span { color: var(--teal); }
+    nav { display: flex; align-items: center; gap: 28px; }
+    nav a {
+      color: var(--slate-600);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color .15s;
+    }
+    nav a:hover { color: var(--teal); }
+    .header-cta { display: flex; align-items: center; gap: 12px; }
+    @media (max-width: 640px) {
+      nav { display: none; }
+      .header-cta .btn-secondary { display: none; }
+    }
+
+    /* ─── HERO ──────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, #F0FDFF 0%, #ECFEFF 40%, #F8FAFC 100%);
+      padding: 80px 0 72px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -120px; left: -120px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(8,145,178,.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; right: -80px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(249,115,22,.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 64px;
+      align-items: center;
+    }
+    .hero-flag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--white);
+      border: 1px solid var(--teal-mid);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--teal-dark);
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .hero-flag .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--coral);
+      flex-shrink: 0;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: .6; transform: scale(1.3); }
+    }
+    .hero h1 { margin-bottom: 14px; }
+    .hero-subtitle {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--teal-dark);
+      margin-bottom: 20px;
+    }
+    .hero-desc {
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: var(--slate-600);
+      margin-bottom: 10px;
+    }
+    .hero-tagline {
+      font-size: 0.9rem;
+      color: var(--slate-400);
+      margin-bottom: 32px;
+      font-style: italic;
+    }
+    .hero-cta-group { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; }
+    .hero-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .hero-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--slate-600);
+    }
+    .hero-meta-item svg { color: var(--teal); flex-shrink: 0; }
+    .hero-visual {
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+    .hero-card {
+      background: var(--white);
+      border-radius: 24px;
+      box-shadow: var(--shadow-lg);
+      padding: 32px;
+      width: 100%;
+      max-width: 380px;
+      border: 1px solid var(--slate-200);
+    }
+    .hero-card-emoji { font-size: 3rem; margin-bottom: 16px; }
+    .hero-card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--slate-900); }
+    .hero-card-text  { font-size: .9rem; color: var(--slate-600); margin-bottom: 20px; }
+    .pilot-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .pilot-badge {
+      background: var(--teal-light);
+      color: var(--teal-dark);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 100px;
+    }
+    .pilot-badge.coral {
+      background: var(--coral-light);
+      color: var(--coral);
+    }
+    @media (max-width: 820px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+      .hero-visual { order: -1; }
+      .hero-card   { max-width: 100%; }
+    }
+
+    /* ─── VALUE BLOCK ───────────────────────────────── */
+    .value-block { background: var(--white); }
+    .value-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: center;
+    }
+    .value-text h2 { margin-bottom: 16px; }
+    .value-text p  { font-size: 1.05rem; line-height: 1.8; margin-bottom: 16px; }
+    .value-items { display: flex; flex-direction: column; gap: 16px; }
+    .value-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      background: var(--slate-50);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      border: 1px solid var(--slate-200);
+    }
+    .value-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: var(--teal-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.2rem;
+    }
+    .value-item-text h3 { margin-bottom: 4px; font-size: 1rem; }
+    .value-item-text p  { font-size: .9rem; }
+    @media (max-width: 700px) {
+      .value-inner { grid-template-columns: 1fr; gap: 36px; }
+    }
+
+    /* ─── WHY PILOT ─────────────────────────────────── */
+    .why-pilot { background: var(--teal-deep); }
+    .why-pilot h2, .why-pilot p, .why-pilot h3 { color: #fff; }
+    .why-pilot p { color: rgba(255,255,255,.75); }
+    .why-pilot .tag { background: rgba(255,255,255,.12); color: #fff; }
+    .why-intro { font-size: 1.1rem; margin: 0 auto 40px; max-width: 640px; }
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-bottom: 36px;
+    }
+    .why-card {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: background .2s;
+    }
+    .why-card:hover { background: rgba(255,255,255,.12); }
+    .why-num {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--teal);
+      margin-bottom: 8px;
+      line-height: 1;
+    }
+    .why-card h3 { font-size: 1rem; margin-bottom: 6px; }
+    .why-card p  { font-size: .9rem; }
+    .why-note {
+      background: rgba(249,115,22,.12);
+      border: 1px solid rgba(249,115,22,.25);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      color: rgba(255,255,255,.9) !important;
+      font-size: .95rem;
+      text-align: center;
+    }
+    @media (max-width: 600px) {
+      .why-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ─── HOW IT WORKS ──────────────────────────────── */
+    .how-block { background: var(--white); }
+    .how-steps {
+      display: flex;
+      gap: 0;
+      position: relative;
+      margin-top: 48px;
+    }
+    .how-steps::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      right: 10%;
+      left: 10%;
+      height: 2px;
+      background: linear-gradient(to left, var(--teal-mid), var(--teal));
+    }
+    .how-step {
+      flex: 1;
+      text-align: center;
+      padding: 0 12px;
+      position: relative;
+    }
+    .how-step-num {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: var(--teal);
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 4px 16px rgba(8,145,178,.35);
+    }
+    .how-step h3 { margin-bottom: 6px; }
+    .how-step p  { font-size: .88rem; }
+    .how-note {
+      margin-top: 36px;
+      background: var(--slate-50);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      border: 1px solid var(--slate-200);
+      font-size: .9rem;
+      color: var(--slate-600);
+      text-align: center;
+    }
+    @media (max-width: 680px) {
+      .how-steps { flex-direction: column; gap: 8px; }
+      .how-steps::before { display: none; }
+      .how-step { display: flex; align-items: flex-start; gap: 16px; text-align: right; }
+      .how-step-num { flex-shrink: 0; margin: 0; }
+    }
+
+    /* ─── WHO IS IT FOR ─────────────────────────────── */
+    .who-block { background: var(--bg); }
+    .who-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 40px;
+    }
+    .who-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 28px;
+      border: 1px solid var(--slate-200);
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow .2s, transform .2s;
+    }
+    .who-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .who-card .who-emoji { font-size: 2.2rem; margin-bottom: 14px; }
+    .who-card h3 { margin-bottom: 8px; }
+    .who-card p  { font-size: .9rem; }
+    .who-also {
+      margin-top: 28px;
+      background: var(--teal-light);
+      border: 1px solid var(--teal-mid);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      text-align: center;
+      color: var(--teal-dark) !important;
+      font-weight: 500;
+    }
+    @media (max-width: 640px) {
+      .who-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ─── FORM BLOCK ────────────────────────────────── */
+    .form-block {
+      background: linear-gradient(135deg, var(--teal-light) 0%, #F0FDFF 100%);
+      border-top: 1px solid var(--teal-mid);
+      border-bottom: 1px solid var(--teal-mid);
+    }
+    .form-header { max-width: 600px; margin: 0 auto 40px; }
+    .form-header h2 { margin-bottom: 12px; }
+    .form-header p  { font-size: 1rem; }
+    .form-card {
+      background: var(--white);
+      border-radius: 20px;
+      box-shadow: var(--shadow-lg);
+      padding: 40px 40px;
+      max-width: 680px;
+      margin: 0 auto;
+      border: 1px solid var(--slate-200);
+    }
+
+    /* intent selector */
+    .intent-label { font-weight: 600; color: var(--slate-700); margin-bottom: 14px; font-size: .95rem; }
+    .intent-options { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+    .intent-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 16px 20px;
+      border: 2px solid var(--slate-200);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .intent-option:hover { border-color: var(--teal); background: var(--teal-light); }
+    .intent-option.selected { border-color: var(--teal); background: var(--teal-light); }
+    .intent-option input[type="radio"] { display: none; }
+    .intent-icon { font-size: 1.6rem; flex-shrink: 0; line-height: 1; }
+    .intent-text strong { display: block; font-size: .95rem; color: var(--slate-800); margin-bottom: 3px; }
+    .intent-text span   { font-size: .85rem; color: var(--slate-500); }
+
+    /* form fields */
+    .form-fields { display: none; }
+    .form-fields.visible { display: block; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-row.full { grid-template-columns: 1fr; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: .88rem; font-weight: 600; color: var(--slate-700); }
+    .field input, .field select, .field textarea {
+      padding: 11px 14px;
+      border: 1.5px solid var(--slate-200);
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 15px;
+      color: var(--slate-800);
+      background: var(--white);
+      transition: border-color .15s, box-shadow .15s;
+      outline: none;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(8,145,178,.12);
+    }
+    .field textarea { min-height: 90px; resize: vertical; }
+    .field select { cursor: pointer; }
+    .field .optional { font-weight: 400; color: var(--slate-400); font-size: .8rem; }
+
+    .form-submit { margin-top: 24px; }
+    .form-submit .btn { width: 100%; justify-content: center; font-size: 1rem; padding: 15px; }
+    .form-meta {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .form-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: var(--slate-400);
+    }
+
+    /* success state */
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 32px 20px;
+    }
+    .form-success.visible { display: block; }
+    .form-success .success-icon { font-size: 3.5rem; margin-bottom: 20px; }
+    .form-success h3 { font-size: 1.4rem; margin-bottom: 10px; }
+    .form-success p  { margin-bottom: 24px; }
+    .share-cta {
+      background: var(--slate-50);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .share-cta span { font-size: .9rem; color: var(--slate-600); }
+
+    @media (max-width: 560px) {
+      .form-card { padding: 28px 20px; }
+      .form-row  { grid-template-columns: 1fr; }
+    }
+
+    /* ─── FOUNDER STORY ──────────────────────────────── */
+    .founder-block { background: var(--white); }
+    .founder-inner {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 48px;
+      align-items: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .founder-avatar {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--teal), var(--teal-deep));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.8rem;
+      flex-shrink: 0;
+    }
+    .founder-text blockquote {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--slate-600);
+      font-style: italic;
+      border-right: 3px solid var(--teal);
+      padding-right: 20px;
+      margin-bottom: 16px;
+    }
+    .founder-name { font-weight: 700; color: var(--slate-800); font-size: .95rem; }
+    @media (max-width: 600px) {
+      .founder-inner { grid-template-columns: 1fr; text-align: center; }
+      .founder-avatar { margin: 0 auto; }
+      .founder-text blockquote { border-right: none; border-top: 3px solid var(--teal); padding-right: 0; padding-top: 16px; }
+    }
+
+    /* ─── FAQ ───────────────────────────────────────── */
+    .faq-block { background: var(--bg); }
+    .faq-list { max-width: 720px; margin: 40px auto 0; display: flex; flex-direction: column; gap: 12px; }
+    .faq-item {
+      background: var(--white);
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .faq-q {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--slate-800);
+      text-align: right;
+      transition: background .15s;
+    }
+    .faq-q:hover { background: var(--slate-50); }
+    .faq-q svg {
+      flex-shrink: 0;
+      transition: transform .25s;
+      color: var(--teal);
+    }
+    .faq-q.open svg { transform: rotate(45deg); }
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .3s ease, padding .3s ease;
+    }
+    .faq-a.open { max-height: 300px; }
+    .faq-a-inner { padding: 0 24px 20px; font-size: .95rem; color: var(--slate-600); line-height: 1.75; }
+
+    /* ─── FOOTER ────────────────────────────────────── */
+    footer {
+      background: var(--slate-900);
+      color: rgba(255,255,255,.6);
+      padding: 40px 0;
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .footer-logo {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #fff;
+      text-decoration: none;
+    }
+    .footer-logo span { color: var(--teal); }
+    .footer-copy { font-size: .85rem; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a {
+      color: rgba(255,255,255,.5);
+      text-decoration: none;
+      font-size: .85rem;
+      transition: color .15s;
+    }
+    .footer-links a:hover { color: #fff; }
+
+    /* ─── SECTION DIVIDER ───────────────────────────── */
+    .section-cta-strip {
+      background: var(--teal-light);
+      border-top: 1px solid var(--teal-mid);
+      border-bottom: 1px solid var(--teal-mid);
+      padding: 28px 0;
+    }
+    .section-cta-strip .inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .section-cta-strip p { font-weight: 600; color: var(--teal-dark); font-size: 1rem; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header>
+  <div class="container">
+    <div class="header-inner">
+      <a class="logo" href="#"><span>No</span>Map</a>
+      <nav>
+        <a href="#how">איך זה עובד</a>
+        <a href="#form">להצטרפות</a>
+      </nav>
+      <div class="header-cta">
+        <a href="#form" class="btn btn-secondary btn-sm">לא בתאילנד עכשיו? לעדכון בהשקה</a>
+        <a href="#form" class="btn btn-primary btn-sm">בתאילנד בקרוב? לפיילוט</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="hero-flag">
+          <span class="dot"></span>
+          פיילוט סגור פתוח עכשיו · תאילנד 🇹🇭
+        </div>
+        <h1>האפליקציה לישראלים שמטיילים בחו"ל</h1>
+        <p class="hero-subtitle">השקה ראשונה והיעד הראשון שלנו הוא תאילנד.</p>
+        <p class="hero-desc">
+          אנחנו פותחים פיילוט סגור ל-3 שבועות ומחפשים מטיילות ומטיילים
+          שרוצים להיות הראשונים לנסות את האפליקציה שהולכת לשדרג את האופן
+          שבו ישראלים מטיילים ומגלים את העולם.
+        </p>
+        <p class="hero-tagline">המצפן של הישראלים שמטיילים בעולם. המלצות אמיתיות, טיפים מהשטח.</p>
+        <div class="hero-cta-group">
+          <a href="#form" class="btn btn-primary">בתאילנד בקרוב? להצטרפות לפיילוט ✈️</a>
+          <a href="#form" class="btn btn-secondary">לא בתאילנד עכשיו? לקבל עדכון בהשקה</a>
+        </div>
+        <div class="hero-meta">
+          <div class="hero-meta-item">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            פיילוט סגור ומוגבל בזמן — 3 שבועות בלבד.
+          </div>
+          <div class="hero-meta-item">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            מיועד למטיילים שיהיו בתאילנד בשבועות הקרובים.
+          </div>
+          <div class="hero-meta-item">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            אפשר להירשם גם רק לעדכון לקראת ההשקה.
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="hero-card">
+          <div class="hero-card-emoji">🗺️</div>
+          <div class="hero-card-title">NoMap — פיילוט תאילנד</div>
+          <div class="hero-card-text">
+            קבוצה סגורה של מטיילים ישראלים שמגלים את תאילנד יחד,
+            חולקים המלצות מהשטח, ומעצבים את האפליקציה לפני כולם.
+          </div>
+          <div class="pilot-badges">
+            <span class="pilot-badge">🔒 גישה מוקדמת</span>
+            <span class="pilot-badge">📍 תאילנד</span>
+            <span class="pilot-badge coral">🚀 3 שבועות</span>
+            <span class="pilot-badge">🇮🇱 ישראלים</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ VALUE BLOCK ═══════════ -->
+<section class="section value-block">
+  <div class="container">
+    <div class="value-inner">
+      <div class="value-text">
+        <span class="tag">מה זה NoMap</span>
+        <h2>המצפן של הישראלים שמטיילים בעולם</h2>
+        <p>
+          המלצות אמיתיות, טיפים מהשטח, וחוויה שנבנית במיוחד סביב הצרכים של מטיילים ישראלים.
+        </p>
+        <p>
+          NoMap נולדה מתוך ההבנה שטיול טוב לא בנוי רק ממקומות יפים — אלא מהיכולת למצוא
+          את הדברים שבאמת מתאימים לך, בזמן הנכון, ובדרך שמרגישה טבעית ופשוטה.
+        </p>
+      </div>
+      <div class="value-items">
+        <div class="value-item">
+          <div class="value-icon">🏕️</div>
+          <div class="value-item-text">
+            <h3>המלצות אמיתיות</h3>
+            <p>תוכן שנבנה מניסיון מהשטח, לא מקטלוגים של סוכנויות.</p>
+          </div>
+        </div>
+        <div class="value-item">
+          <div class="value-icon">🧭</div>
+          <div class="value-item-text">
+            <h3>מחובר לשטח</h3>
+            <p>מידע שמרגיש כאילו חבר שיודע סיפר לך — לא עוד מדריך תיירות.</p>
+          </div>
+        </div>
+        <div class="value-item">
+          <div class="value-icon">🇮🇱</div>
+          <div class="value-item-text">
+            <h3>ישראלי מהיסוד</h3>
+            <p>חוויית טיול מותאמת למטיילים הישראלים — בשפה, בטעם, בצרכים.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ WHY PILOT ═══════════ -->
+<section class="section why-pilot">
+  <div class="container text-center">
+    <span class="tag">למה להצטרף</span>
+    <h2 style="margin-bottom:16px;">למה להצטרף לפיילוט?</h2>
+    <p class="why-intro">
+      תהיו חלק מקבוצה סגורה ומגניבה של מטיילים שנמצאים איתכם בתאילנד ממש באותו הזמן
+      ומחפשים את החוויות הכי מיוחדות.
+    </p>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-num">01</div>
+        <h3>להיות ראשונים</h3>
+        <p>לנסות את NoMap לפני כולם ולהיות חלק מהפרק הראשון של הסיפור.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-num">02</div>
+        <h3>קבוצה סגורה</h3>
+        <p>להצטרף לקבוצה של מטיילים ישראלים שנמצאים עכשיו בתאילנד.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-num">03</div>
+        <h3>להשפיע</h3>
+        <p>לשתף תובנות מהשטח ולהשפיע על מה שייבנה הלאה.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-num">04</div>
+        <h3>לקחת חלק במשהו גדול</h3>
+        <p>אפליקציה שיכולה בעתיד לשרת מאות אלפי ישראלים שמטיילים.</p>
+      </div>
+    </div>
+    <p class="why-note">
+      אם תהיו בתאילנד בשבועות הקרובים, יכול להיות שאתם בדיוק מתאימים לפיילוט הראשון. ואם לא — אפשר להירשם לעדכון לקראת ההשקה.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════ HOW IT WORKS ═══════════ -->
+<section id="how" class="section how-block">
+  <div class="container">
+    <div class="text-center">
+      <span class="tag">תהליך</span>
+      <h2>איך זה עובד?</h2>
+    </div>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="how-step-num">1</div>
+        <h3>נרשמים</h3>
+        <p>ממלאים את הטופס בדף</p>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">2</div>
+        <h3>ניצור קשר</h3>
+        <p>אם תהיה התאמה — נחזור אליכם</p>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">3</div>
+        <h3>מצטרפים לפיילוט</h3>
+        <p>גישה לקבוצה הסגורה</p>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">4</div>
+        <h3>מטיילים ומשתפים</h3>
+        <p>משתמשים ומשתפים תובנות</p>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">5</div>
+        <h3>משפיעים</h3>
+        <p>מדייקים את NoMap לקראת ההשקה</p>
+      </div>
+    </div>
+    <p class="how-note">
+      הפיילוט מוגדר מראש לפרק זמן של 3 שבועות, במטרה לקבל פידבק ממשתמשים אמיתיים,
+      לזהות פערים, ולשפר את המוצר לפני פתיחה רחבה יותר.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════ CTA STRIP ═══════════ -->
+<div class="section-cta-strip">
+  <div class="container">
+    <div class="inner">
+      <p>בתאילנד בקרוב? אולי יש לנו מאץ' 🤝</p>
+      <a href="#form" class="btn btn-primary">להצטרפות לפיילוט</a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ WHO IS IT FOR ═══════════ -->
+<section class="section who-block">
+  <div class="container">
+    <div class="text-center">
+      <span class="tag">קהל היעד</span>
+      <h2>למי זה מתאים עכשיו?</h2>
+    </div>
+    <div class="who-grid">
+      <div class="who-card">
+        <div class="who-emoji">✈️</div>
+        <h3>טסים לתאילנד בקרוב</h3>
+        <p>ישראלים שמתכננים להיות בתאילנד בשבועות הקרובים ורוצים חוויה מיוחדת.</p>
+      </div>
+      <div class="who-card">
+        <div class="who-emoji">🔍</div>
+        <h3>סקרנים ופתוחים לחדש</h3>
+        <p>מטיילות ומטיילים שאוהבים לנסות דברים חדשים ולגלות לפני כולם.</p>
+      </div>
+      <div class="who-card">
+        <div class="who-emoji">💬</div>
+        <h3>אוהבים לשתף</h3>
+        <p>אנשים שנהנים לשתף המלצות, תובנות וחוויות עם אחרים.</p>
+      </div>
+    </div>
+    <p class="who-also">
+      גם אם אתם לא טסים עכשיו — אפשר להירשם כדי לקבל עדכון כשהאפליקציה תהיה זמינה להורדה.
+      <a href="#form" style="color: var(--teal-dark); font-weight: 700; text-decoration: underline;">לרישום לעדכון ←</a>
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════ FORM BLOCK ═══════════ -->
+<section id="form" class="section form-block">
+  <div class="container">
+    <div class="form-header text-center">
+      <span class="tag">הצטרפות</span>
+      <h2>רוצים להצטרף לפיילוט או לקבל עדכון להשקה?</h2>
+      <p>
+        אם אתם בתאילנד בקרוב — נשמח לבדוק התאמה לפיילוט.
+        אם לא, אפשר להשאיר פרטים ולקבל עדכון ברגע ש-NoMap תעלה לאוויר.
+      </p>
+    </div>
+
+    <div class="form-card">
+      <div id="formMain">
+        <!-- Intent selector -->
+        <p class="intent-label">מה מעניין אותך?</p>
+        <div class="intent-options">
+          <label class="intent-option" id="opt-pilot">
+            <input type="radio" name="intent" value="pilot" />
+            <div class="intent-icon">✈️</div>
+            <div class="intent-text">
+              <strong>אני אהיה בתאילנד ורוצה להצטרף לפיילוט</strong>
+              <span>גישה מוקדמת, קבוצה סגורה, השפעה על המוצר</span>
+            </div>
+          </label>
+          <label class="intent-option" id="opt-update">
+            <input type="radio" name="intent" value="update" />
+            <div class="intent-icon">🔔</div>
+            <div class="intent-text">
+              <strong>אני רוצה לקבל עדכון כשהאפליקציה תושק</strong>
+              <span>לא בתאילנד עכשיו? לא נעלם — נעדכן אתכם ראשונים</span>
+            </div>
+          </label>
+        </div>
+
+        <!-- PILOT FORM -->
+        <div id="pilotFields" class="form-fields">
+          <div class="form-row">
+            <div class="field">
+              <label for="p-name">שם מלא</label>
+              <input id="p-name" type="text" placeholder="ישראל ישראלי" />
+            </div>
+            <div class="field">
+              <label for="p-phone">טלפון</label>
+              <input id="p-phone" type="tel" placeholder="050-0000000" />
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="field">
+              <label for="p-email">אימייל</label>
+              <input id="p-email" type="email" placeholder="you@email.com" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label for="p-from">תאריך יציאה לתאילנד</label>
+              <input id="p-from" type="date" />
+            </div>
+            <div class="field">
+              <label for="p-to">תאריך חזרה</label>
+              <input id="p-to" type="date" />
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="field">
+              <label for="p-device">באיזה מכשיר אתם משתמשים?</label>
+              <select id="p-device">
+                <option value="" disabled selected>בחרו מכשיר</option>
+                <optgroup label="Apple">
+                  <option>iPhone 16 / 16 Plus</option>
+                  <option>iPhone 16 Pro / 16 Pro Max</option>
+                  <option>iPhone 15 / 15 Plus</option>
+                  <option>iPhone 15 Pro / 15 Pro Max</option>
+                  <option>iPhone 14 / 14 Plus</option>
+                  <option>iPhone 14 Pro / 14 Pro Max</option>
+                  <option>iPhone 13</option>
+                  <option>iPhone 13 Pro / 13 Pro Max</option>
+                  <option>iPhone 12</option>
+                  <option>iPhone SE</option>
+                  <option>iPhone אחר</option>
+                </optgroup>
+                <optgroup label="Samsung">
+                  <option>Galaxy S25 / S25+</option>
+                  <option>Galaxy S25 Ultra</option>
+                  <option>Galaxy S24 / S24+</option>
+                  <option>Galaxy S24 Ultra</option>
+                  <option>Galaxy S23 / S23+</option>
+                  <option>Galaxy S23 Ultra</option>
+                  <option>Galaxy A56</option>
+                  <option>Galaxy A55</option>
+                  <option>Galaxy A54</option>
+                  <option>Galaxy אחר</option>
+                </optgroup>
+                <optgroup label="Xiaomi / Redmi / POCO">
+                  <option>Xiaomi 15 / 15 Pro</option>
+                  <option>Redmi Note 14</option>
+                  <option>Redmi Note 13</option>
+                  <option>POCO X7 / X7 Pro</option>
+                  <option>POCO F6 / F6 Pro</option>
+                  <option>Xiaomi / Redmi / POCO אחר</option>
+                </optgroup>
+                <optgroup label="Google">
+                  <option>Pixel 9 / 9 Pro</option>
+                  <option>Pixel 8 / 8 Pro</option>
+                  <option>Pixel אחר</option>
+                </optgroup>
+                <optgroup label="אחר">
+                  <option>OnePlus</option>
+                  <option>Nothing Phone</option>
+                  <option>Motorola</option>
+                  <option>Oppo / Realme / Vivo</option>
+                  <option>אחר</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+          <div class="form-row full" id="deviceOtherRow" style="display:none;">
+            <div class="field">
+              <label for="p-device-other">פרטו את המכשיר <span class="optional">(אופציונלי)</span></label>
+              <input id="p-device-other" type="text" placeholder="למשל: Oppo Reno 10 Pro" />
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="field">
+              <label for="p-curious">מה מסקרן אתכם ב-NoMap? <span class="optional">(אופציונלי)</span></label>
+              <textarea id="p-curious" placeholder="ספרו לנו בחופשיות..."></textarea>
+            </div>
+          </div>
+          <div class="form-submit">
+            <button type="button" class="btn btn-primary" onclick="submitForm('pilot')">להגשת מועמדות לפיילוט ✈️</button>
+          </div>
+          <div class="form-meta">
+            <div class="form-meta-item">🔒 הפיילוט סגור ומספר המקומות מוגבל.</div>
+            <div class="form-meta-item">📞 ניצור קשר רק אם תהיה התאמה להשתתפות בפיילוט.</div>
+            <div class="form-meta-item">📱 פרטי המכשיר יעזרו לנו ללמוד על התאמת האפליקציה למגוון מכשירים.</div>
+          </div>
+        </div>
+
+        <!-- UPDATE FORM -->
+        <div id="updateFields" class="form-fields">
+          <div class="form-row">
+            <div class="field">
+              <label for="u-name">שם מלא</label>
+              <input id="u-name" type="text" placeholder="ישראל ישראלי" />
+            </div>
+            <div class="field">
+              <label for="u-email">אימייל</label>
+              <input id="u-email" type="email" placeholder="you@email.com" />
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="field">
+              <label for="u-phone">טלפון <span class="optional">(אופציונלי)</span></label>
+              <input id="u-phone" type="tel" placeholder="050-0000000" />
+            </div>
+          </div>
+          <div class="form-submit">
+            <button type="button" class="btn btn-secondary" style="width:100%; justify-content:center; font-size:1rem; padding:15px;" onclick="submitForm('update')">לקבלת עדכון בהשקה 🔔</button>
+          </div>
+          <div class="form-meta">
+            <div class="form-meta-item">✉️ נשלח עדכון ברגע ש-NoMap תעלה לאוויר — לא יותר.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUCCESS STATE -->
+      <div class="form-success" id="successPilot">
+        <div class="success-icon">🎉</div>
+        <h3>איזה כיף — קיבלנו את הפרטים שלכם!</h3>
+        <p>אם תהיה התאמה לפיילוט הקרוב בתאילנד, ניצור איתכם קשר בהקדם.</p>
+        <div class="share-cta">
+          <span>יש לכם חברים שטסים לתאילנד?</span>
+          <button class="btn btn-secondary btn-sm" onclick="shareLink()">שתפו אותם את הדף 🔗</button>
+        </div>
+      </div>
+      <div class="form-success" id="successUpdate">
+        <div class="success-icon">✅</div>
+        <h3>נרשמתם בהצלחה!</h3>
+        <p>נעדכן אתכם כש-NoMap תעלה לאוויר — הרגע שכולם ממתינים לו.</p>
+        <div class="share-cta">
+          <span>יש לכם חברים שטסים לתאילנד?</span>
+          <button class="btn btn-secondary btn-sm" onclick="shareLink()">שתפו אותם את הדף 🔗</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOUNDER STORY ═══════════ -->
+<section class="section founder-block">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:48px;">
+      <span class="tag">מאחורי הרעיון</span>
+      <h2>למה אנחנו בונים את NoMap?</h2>
+    </div>
+    <div class="founder-inner">
+      <div class="founder-avatar">🧭</div>
+      <div class="founder-text">
+        <blockquote>
+          "אחרי שנים של טיולים ברחבי העולם, הרגשנו שהגיע הזמן לבנות אפליקציה שתיתן מענה לישראלים
+          שאוהבים לטייל ורוצים חוויית טיול מיוחדת שתתאים בדיוק למה שהם מחפשים.
+          יש לנו עוד המון תכנונים ואינספור רעיונות — והכי חשוב, האפליקציה תהיה זמינה להורדה בחינם,
+          כדי שכל אחד ואחת יוכלו ליהנות ממנה."
+        </blockquote>
+        <p class="founder-name">צוות NoMap</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FAQ ═══════════ -->
+<section class="section faq-block">
+  <div class="container">
+    <div class="text-center">
+      <span class="tag">שאלות נפוצות</span>
+      <h2>שאלות נפוצות</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          מה זה אומר פיילוט סגור?
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">מדובר בקבוצה מצומצמת של משתמשים שתוזמן לנסות את NoMap בשלב הראשון, כדי שנוכל ללמוד מהשטח ולשפר את החוויה לפני פתיחה רחבה יותר.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          כמה זמן הפיילוט יימשך?
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">הפיילוט מוגדר כרגע לתקופה של 3 שבועות.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          האם חייבים להיות בתאילנד כדי להירשם?
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">לא. אם אתם לא בתאילנד בקרוב, אפשר להירשם כדי לקבל עדכון כשהאפליקציה תושק — ולא לפספס את ההשקה.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          מה יקרה אחרי ההרשמה?
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">נעבור על הפרטים, ואם תהיה התאמה לפיילוט — ניצור איתכם קשר להמשך. אם נרשמתם לעדכון, נחזור אליכם ברגע שהאפליקציה תהיה זמינה.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          האם האפליקציה תהיה בתשלום?
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">המטרה היא שהאפליקציה תהיה זמינה להורדה בחינם, כדי שכל אחד ואחת יוכלו ליהנות ממנה.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <a class="footer-logo" href="#"><span>No</span>Map</a>
+      <p class="footer-copy">© 2025 NoMap. כל הזכויות שמורות.</p>
+      <div class="footer-links">
+        <a href="#form">הצטרפות</a>
+        <a href="#how">איך זה עובד</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Intent selection
+  document.querySelectorAll('.intent-option input[type="radio"]').forEach(radio => {
+    radio.addEventListener('change', function () {
+      document.querySelectorAll('.intent-option').forEach(opt => opt.classList.remove('selected'));
+      this.closest('.intent-option').classList.add('selected');
+      document.querySelectorAll('.form-fields').forEach(f => f.classList.remove('visible'));
+      const target = this.value === 'pilot' ? 'pilotFields' : 'updateFields';
+      document.getElementById(target).classList.add('visible');
+    });
+  });
+
+  // Show "other device" text input
+  document.getElementById('p-device').addEventListener('change', function () {
+    const isOther = this.value === 'אחר' || this.value.includes('אחר') || this.value === 'Oppo / Realme / Vivo';
+    document.getElementById('deviceOtherRow').style.display = isOther ? '' : 'none';
+  });
+
+  // FAQ toggle
+  function toggleFaq(btn) {
+    const answer = btn.nextElementSibling;
+    const isOpen = btn.classList.contains('open');
+    // close all
+    document.querySelectorAll('.faq-q.open').forEach(b => {
+      b.classList.remove('open');
+      b.nextElementSibling.classList.remove('open');
+    });
+    if (!isOpen) {
+      btn.classList.add('open');
+      answer.classList.add('open');
+    }
+  }
+
+  // Form submit (mock — replace with Fillout or backend call)
+  function submitForm(type) {
+    const formMain = document.getElementById('formMain');
+    formMain.style.display = 'none';
+    if (type === 'pilot') {
+      document.getElementById('successPilot').classList.add('visible');
+    } else {
+      document.getElementById('successUpdate').classList.add('visible');
+    }
+  }
+
+  // Share
+  function shareLink() {
+    if (navigator.share) {
+      navigator.share({ title: 'NoMap – פיילוט תאילנד', url: window.location.href });
+    } else {
+      navigator.clipboard.writeText(window.location.href).then(() => alert('הלינק הועתק!'));
+    }
+  }
+</script>
+</body>
+</html>
