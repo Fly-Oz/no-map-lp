@@ -7,7 +7,7 @@ export default function PhoneMockup() {
       <div className="phone-screen">
         <Image
           src="/screenshot-1.png"
-          alt="NoMap App — מפת צ׳יאנג מאי"
+          alt="NoMap App - מפת צ׳יאנג מאי"
           fill
           style={{ objectFit: 'cover', objectPosition: 'top' }}
           priority
