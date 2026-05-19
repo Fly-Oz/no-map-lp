@@ -49,21 +49,6 @@ async function fetchAllDevices(): Promise<Array<{ id: string; model: string }>> 
 
 /* ─── Device matching ───────────────────────────────────────────────────── */
 
-/**
- * Maps a form option string (e.g. "iPhone 16 Pro / 16 Pro Max") to
- * one or more Airtable Devices record IDs.
- *
- * Matching rules (all case-insensitive):
- *  1. model ends with " <part>"  →  "Samsung Galaxy S25" ←← "Galaxy S25"
- *  2. model starts with "<part>" (+ space or "(")  →  "Nothing Phone (2a)" ←← "Nothing Phone"
- *  3. <part> starts with a digit AND model ends with " <part>"
- *     →  "Apple iPhone 16 Pro Max" ←← "16 Pro Max"
- *
- * Rule 1 catches both exact-name matches and brand-prefix differences.
- * Rule 2 catches brand-only selectors ("OnePlus", "Motorola") and
- *         model-line selectors ("Nothing Phone").
- * Rule 3 catches grouped options with a shared prefix ("iPhone 16 Pro / 16 Pro Max").
- */
 function matchDevices(
   formOption: string,
   devices: Array<{ id: string; model: string }>,
@@ -78,15 +63,12 @@ function matchDevices(
       const m = norm(model)
       return parts.some(part => {
         if (!part) return false
-        // Rule 1: model ends with " <part>" or equals <part>
         if (m === part || m.endsWith(' ' + part)) return true
-        // Rule 2: model starts with "<part>" followed by space or "("
         if (
           m.startsWith(part) &&
           (m.length === part.length || m[part.length] === ' ' || m[part.length] === '(')
         )
           return true
-        // Rule 3: digit-prefixed part is a suffix (for combined form options)
         if (/^\d/.test(part) && m.endsWith(' ' + part)) return true
         return false
       })
@@ -94,34 +76,85 @@ function matchDevices(
     .map(d => d.id)
 }
 
+/* ─── Email alert on failure ─────────────────────────────────────────────── */
+
+async function sendFailureAlert(type: string, body: unknown, error: string) {
+  const key = process.env.RESEND_API_KEY
+  if (!key) return // silent no-op until key is configured
+
+  const text = [
+    `⚠️ הגשת טופס NoMap נכשלה ב-Airtable`,
+    ``,
+    `סוג: ${type}`,
+    `זמן: ${new Date().toISOString()}`,
+    `שגיאה: ${error}`,
+    ``,
+    `נתונים מלאים (לשחזור ידני):`,
+    JSON.stringify(body, null, 2),
+  ].join('\n')
+
+  try {
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${key}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'NoMap Alerts <alerts@nomap.flybiz.co.il>',
+        to: 'oz@flybiz.co.il',
+        subject: `⚠️ NoMap - הגשה נכשלה (${type})`,
+        text,
+      }),
+    })
+  } catch (emailErr) {
+    console.error('[alert-email] failed to send', emailErr)
+  }
+}
+
 /* ─── Route handler ─────────────────────────────────────────────────────── */
 
+// Helper: only add field to object if value is non-empty
+function set(
+  obj: Record<string, unknown>,
+  key: string,
+  value: unknown,
+  { onlyIfTruthy = false } = {},
+) {
+  if (onlyIfTruthy && !value) return
+  obj[key] = value
+}
+
 export async function POST(req: NextRequest) {
+  let body: Record<string, unknown> = {}
+  let type = 'unknown'
+
   try {
-    const body = await req.json()
-    const { type } = body
+    body = await req.json()
+    type = String(body.type ?? 'unknown')
+
+    // ── Full submission log (always) — visible in Vercel Function Logs ──
+    console.log('[submit:received]', JSON.stringify(body))
 
     if (type === 'pilot') {
-      // Resolve device → linked Airtable records
       const devices   = await fetchAllDevices()
-      const linkedIds = matchDevices(body.device || '', devices)
+      const linkedIds = matchDevices(String(body.device ?? ''), devices)
 
       const fields: Record<string, unknown> = {
-        'שם מלא':          body.name             || '',
-        'אימייל':           body.email            || null,
-        'ממתי בתאילנד':    body.dateFrom          || null,
-        'עד מתי בתאילנד': body.dateTo            || null,
-        'גרים בתאילנד':    body.livesInThailand  === true,
-        'מכשיר':            body.device           || '',
-        'פרטי מכשיר':      body.deviceOther       || '',
-        'מה מעניין אותך':  body.curiosity         || '',
-        'אישור עדכונים':   body.consent          === true,
+        'שם מלא':         body.name     || '',
+        'גרים בתאילנד':   body.livesInThailand === true,
+        'מכשיר':           body.device   || '',
+        'פרטי מכשיר':     body.deviceOther || '',
+        'מה מעניין אותך': body.curiosity || '',
+        'אישור עדכונים':  body.consent  === true,
       }
-      // Phone: only include if non-empty (Airtable phoneNumber field rejects empty string)
-      if (body.phone) fields['טלפון'] = body.phone
-      // Log for backup (visible in Vercel Function logs)
-      console.log('[submit:pilot]', JSON.stringify({ name: body.name, email: body.email, phone: body.phone, device: body.device }))
-      // Only include linked field when we found matching records
+
+      // Typed fields: only include when non-empty to avoid Airtable validation errors
+      set(fields, 'טלפון',           body.phone,    { onlyIfTruthy: true })
+      set(fields, 'אימייל',           body.email,    { onlyIfTruthy: true })
+      set(fields, 'ממתי בתאילנד',    body.dateFrom, { onlyIfTruthy: true })
+      set(fields, 'עד מתי בתאילנד',  body.dateTo,   { onlyIfTruthy: true })
+
       if (linkedIds.length > 0) {
         fields['מכשיר מקושר'] = linkedIds.map(id => ({ id }))
       }
@@ -129,22 +162,33 @@ export async function POST(req: NextRequest) {
       await atPost('Pilot Applicants', fields)
 
     } else if (type === 'update') {
-      const updateFields: Record<string, unknown> = {
+      const fields: Record<string, unknown> = {
         'שם מלא':        body.name    || '',
-        'אימייל':         body.email   || null,
         'אישור עדכונים': body.consent === true,
       }
-      if (body.phone) updateFields['טלפון'] = body.phone
-      console.log('[submit:update]', JSON.stringify({ name: body.name, email: body.email }))
-      await atPost('Update Subscribers', updateFields)
+
+      set(fields, 'אימייל', body.email, { onlyIfTruthy: true })
+      set(fields, 'טלפון',  body.phone, { onlyIfTruthy: true })
+
+      await atPost('Update Subscribers', fields)
 
     } else {
       return NextResponse.json({ ok: false, error: 'Unknown type' }, { status: 400 })
     }
 
+    console.log('[submit:ok]', type, body.email ?? body.name)
     return NextResponse.json({ ok: true })
+
   } catch (err) {
-    console.error('[submit]', err)
-    return NextResponse.json({ ok: false, error: String(err) }, { status: 500 })
+    const errStr = String(err)
+
+    // Log full submission data for manual recovery
+    console.error('[submit:FAILED]', errStr)
+    console.error('[submit:FAILED-body]', JSON.stringify(body))
+
+    // Send email alert with full data
+    await sendFailureAlert(type, body, errStr)
+
+    return NextResponse.json({ ok: false, error: errStr }, { status: 500 })
   }
 }
