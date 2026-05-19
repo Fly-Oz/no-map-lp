@@ -79,10 +79,10 @@ function matchDevices(
 /* ─── Email alert on failure ─────────────────────────────────────────────── */
 
 async function sendFailureAlert(type: string, body: unknown, error: string) {
-  const key = process.env.RESEND_API_KEY
+  const key = process.env.BREVO_API_KEY
   if (!key) return // silent no-op until key is configured
 
-  const text = [
+  const textContent = [
     `⚠️ הגשת טופס NoMap נכשלה ב-Airtable`,
     ``,
     `סוג: ${type}`,
@@ -94,17 +94,17 @@ async function sendFailureAlert(type: string, body: unknown, error: string) {
   ].join('\n')
 
   try {
-    await fetch('https://api.resend.com/emails', {
+    await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${key}`,
+        'api-key': key,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'NoMap Alerts <alerts@nomap.flybiz.co.il>',
-        to: 'oz@flybiz.co.il',
-        subject: `⚠️ NoMap - הגשה נכשלה (${type})`,
-        text,
+        sender:      { name: 'NoMap Alerts', email: 'oz@flybiz.co.il' },
+        to:          [{ email: 'oz@flybiz.co.il' }],
+        subject:     `⚠️ NoMap - הגשה נכשלה (${type})`,
+        textContent,
       }),
     })
   } catch (emailErr) {
