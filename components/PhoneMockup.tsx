@@ -11,6 +11,8 @@ export default function PhoneMockup() {
           fill
           style={{ objectFit: 'cover', objectPosition: 'top' }}
           priority
+          quality={100}
+          sizes="(min-width: 1060px) 258px, (min-width: 820px) 240px, 220px"
         />
       </div>
     </div>

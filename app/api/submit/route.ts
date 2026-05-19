@@ -108,8 +108,7 @@ export async function POST(req: NextRequest) {
 
       const fields: Record<string, unknown> = {
         'שם מלא':          body.name             || '',
-        'טלפון':            body.phone            || '',
-        'אימייל':           body.email            || '',
+        'אימייל':           body.email            || null,
         'ממתי בתאילנד':    body.dateFrom          || null,
         'עד מתי בתאילנד': body.dateTo            || null,
         'גרים בתאילנד':    body.livesInThailand  === true,
@@ -118,6 +117,10 @@ export async function POST(req: NextRequest) {
         'מה מעניין אותך':  body.curiosity         || '',
         'אישור עדכונים':   body.consent          === true,
       }
+      // Phone: only include if non-empty (Airtable phoneNumber field rejects empty string)
+      if (body.phone) fields['טלפון'] = body.phone
+      // Log for backup (visible in Vercel Function logs)
+      console.log('[submit:pilot]', JSON.stringify({ name: body.name, email: body.email, phone: body.phone, device: body.device }))
       // Only include linked field when we found matching records
       if (linkedIds.length > 0) {
         fields['מכשיר מקושר'] = linkedIds.map(id => ({ id }))
@@ -126,12 +129,14 @@ export async function POST(req: NextRequest) {
       await atPost('Pilot Applicants', fields)
 
     } else if (type === 'update') {
-      await atPost('Update Subscribers', {
+      const updateFields: Record<string, unknown> = {
         'שם מלא':        body.name    || '',
-        'אימייל':         body.email   || '',
-        'טלפון':          body.phone   || '',
+        'אימייל':         body.email   || null,
         'אישור עדכונים': body.consent === true,
-      })
+      }
+      if (body.phone) updateFields['טלפון'] = body.phone
+      console.log('[submit:update]', JSON.stringify({ name: body.name, email: body.email }))
+      await atPost('Update Subscribers', updateFields)
 
     } else {
       return NextResponse.json({ ok: false, error: 'Unknown type' }, { status: 400 })

@@ -182,8 +182,8 @@ header.site-header {
   background: var(--white);
   border: 1px solid var(--teal-mid);
   border-radius: 100px;
-  padding: 5px 14px;
-  font-size: 12px;
+  padding: 7px 18px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--teal-dark);
   margin-bottom: 16px;
@@ -471,7 +471,7 @@ header.site-header {
 }
 .founder-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
 .founder-photo {
-  width: 88px; height: 88px;
+  width: 120px; height: 120px;
   border-radius: 50%;
   overflow: hidden;
   border: 3px solid var(--teal-mid);
@@ -680,8 +680,8 @@ header.site-header {
 
 /* ─── FOOTER ─────────────────────────────────────────── */
 footer.site-footer {
-  background: var(--slate-900);
-  color: rgba(255,255,255,.6);
+  background: var(--slate-700);
+  color: rgba(255,255,255,.7);
   padding: 32px 0;
 }
 .footer-inner {
@@ -695,8 +695,23 @@ footer.site-footer {
 .footer-logo span { color: var(--teal); }
 .footer-copy { font-size: .82rem; }
 .footer-links { display: flex; gap: 20px; }
-.footer-links a { color: rgba(255,255,255,.5); text-decoration: none; font-size: .82rem; transition: color .15s; }
+.footer-links a { color: rgba(255,255,255,.6); text-decoration: none; font-size: .82rem; transition: color .15s; }
 .footer-links a:hover { color: #fff; }
+
+/* ─── SHARE BUTTONS ──────────────────────────────────── */
+.share-buttons { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+.share-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 16px; border-radius: 8px; font-size: .85rem; font-weight: 600;
+  text-decoration: none; border: none; cursor: pointer; transition: opacity .15s, transform .15s;
+}
+.share-btn:hover { opacity: .88; transform: translateY(-1px); }
+.share-wa   { background: #25D366; color: #fff; }
+.share-fb   { background: #1877F2; color: #fff; }
+.share-copy { background: var(--slate-100); color: var(--slate-700); }
+
+/* Required star */
+.required-star { color: var(--teal); font-weight: 700; }
 
 /* ─── TABLET (640px+) ────────────────────────────────── */
 @media (min-width: 640px) {

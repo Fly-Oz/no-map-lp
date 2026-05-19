@@ -26,7 +26,7 @@ export default function Hero() {
                 בתאילנד בקרוב? להצטרפות לפיילוט 🌍
               </a>
               <a href="#join" className="btn btn-secondary">
-                עדיין לא בתאילנד? קבלו עדכון בהשקה
+                תעדכנו אותי בהשקה!
               </a>
             </div>
 
