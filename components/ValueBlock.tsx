@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 const features = [
   {
@@ -27,6 +27,29 @@ const features = [
 
 export default function ValueBlock() {
   const [openIndex, setOpenIndex] = useState<number | null>(0)
+  const [inViewSet, setInViewSet] = useState<Set<number>>(new Set())
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([])
+
+  useEffect(() => {
+    if (!('IntersectionObserver' in window)) {
+      setInViewSet(new Set(features.map((_, i) => i)))
+      return
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const idx = Number((entry.target as HTMLElement).dataset.idx)
+            setInViewSet(prev => new Set([...prev, idx]))
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+    )
+    itemRefs.current.forEach(el => { if (el) observer.observe(el) })
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <section id="what" className="section value-block">
@@ -44,7 +67,12 @@ export default function ValueBlock() {
 
           <div className="value-accordion">
             {features.map((f, i) => (
-              <div key={f.title} className={`value-acc-item${openIndex === i ? ' open' : ''}`}>
+              <div
+                key={f.title}
+                ref={el => { itemRefs.current[i] = el }}
+                data-idx={i}
+                className={['value-acc-item', openIndex === i ? 'open' : '', inViewSet.has(i) ? 'in-view' : ''].filter(Boolean).join(' ')}
+              >
                 <button
                   className="value-acc-btn"
                   onClick={() => setOpenIndex(openIndex === i ? null : i)}

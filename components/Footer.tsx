@@ -6,7 +6,7 @@ export default function Footer() {
           <a className="footer-logo" href="#">
             <span>No</span>Map
           </a>
-          <p className="footer-copy">© 2025 NoMap. כל הזכויות שמורות.</p>
+          <p className="footer-copy">© 2026 NoMap. כל הזכויות שמורות.</p>
           <div className="footer-links">
             <a href="#form">הצטרפות</a>
             <a href="#how">איך זה עובד</a>

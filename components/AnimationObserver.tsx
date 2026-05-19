@@ -10,7 +10,7 @@ import { useEffect } from 'react'
 export default function AnimationObserver() {
   useEffect(() => {
     const targets = document.querySelectorAll<HTMLElement>(
-      '.how-step, .why-card, .value-acc-item'
+      '.how-step, .why-card'
     )
 
     if (!('IntersectionObserver' in window)) {
