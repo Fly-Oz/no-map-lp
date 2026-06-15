@@ -70,7 +70,7 @@ export default function FounderStory() {
                         alt={f.name}
                         fill
                         style={{ objectFit: 'cover' }}
-                        sizes="240px"
+                        sizes="180px"
                         className="founder-photo-main"
                       />
                       <Image
@@ -78,7 +78,7 @@ export default function FounderStory() {
                         alt={f.name}
                         fill
                         style={{ objectFit: 'cover' }}
-                        sizes="240px"
+                        sizes="180px"
                         className="founder-photo-hover"
                       />
                     </div>

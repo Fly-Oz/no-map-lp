@@ -467,7 +467,7 @@ header.site-header {
   cursor: default;
 }
 .founder-photo {
-  width: 240px; height: 240px;
+  width: 180px; height: 180px;
   border-radius: 50%;
   overflow: hidden;
   border: 4px solid var(--teal-mid);
