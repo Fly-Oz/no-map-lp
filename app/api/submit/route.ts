@@ -76,7 +76,7 @@ function matchDevices(formOption: string, devices: Array<{ id: string; model: st
 /* ─── Brevo email ────────────────────────────────────────────────────────── */
 
 async function sendBrevo(subject: string, textContent: string): Promise<{ status: number; body: string }> {
-  const key = process.env.BREVO_API_KEY
+  const key = process.env.BREVO_API_KEY?.trim()
   if (!key) return { status: 0, body: 'BREVO_API_KEY missing' }
 
   const res = await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -105,11 +105,18 @@ async function notifyAdmins(subject: string, lines: string[]) {
 /* ─── Test endpoint (remove after Brevo is confirmed working) ───────────── */
 
 export async function GET() {
+  const rawKey = process.env.BREVO_API_KEY ?? ''
   const { status, body } = await sendBrevo(
     '✅ NoMap - בדיקת חיבור Brevo',
     'אם קיבלת את המייל הזה - Brevo עובד!'
   )
-  return NextResponse.json({ brevoStatus: status, brevoResponse: body })
+  return NextResponse.json({
+    brevoStatus: status,
+    brevoResponse: body,
+    keyLength: rawKey.length,
+    keyPrefix: rawKey.slice(0, 6),
+    keySuffix: rawKey.slice(-4),
+  })
 }
 
 /* ─── Route handler ─────────────────────────────────────────────────────── */
