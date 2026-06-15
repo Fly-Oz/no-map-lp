@@ -79,14 +79,13 @@ function matchDevices(
 /* ─── Email alert on failure ─────────────────────────────────────────────── */
 
 async function sendFailureAlert(type: string, body: unknown, error: string) {
-  const resendKey = process.env.RESEND_API_KEY
-  const brevoKey  = process.env.BREVO_API_KEY
-  if (!resendKey && !brevoKey) {
-    console.warn('[alert] no email key configured (RESEND_API_KEY or BREVO_API_KEY)')
+  const key = process.env.BREVO_API_KEY
+  if (!key) {
+    console.warn('[alert-brevo] BREVO_API_KEY not set — skipping email alert')
     return
   }
 
-  const text = [
+  const textContent = [
     `⚠️ הגשת טופס NoMap נכשלה ב-Airtable`,
     ``,
     `סוג: ${type}`,
@@ -96,36 +95,15 @@ async function sendFailureAlert(type: string, body: unknown, error: string) {
     JSON.stringify(body, null, 2),
   ].join('\n')
 
-  if (resendKey) {
-    try {
-      const r = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          from:    'NoMap Alerts <onboarding@resend.dev>',
-          to:      ['oz@flybiz.co.il'],
-          subject: `⚠️ NoMap - הגשה נכשלה (${type})`,
-          text,
-        }),
-      })
-      if (!r.ok) console.error('[alert-resend] failed', r.status, await r.text())
-      else console.log('[alert-resend] sent ok')
-    } catch (e) {
-      console.error('[alert-resend] exception', e)
-    }
-    return
-  }
-
-  // Brevo fallback
   try {
     const r = await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
-      headers: { 'api-key': brevoKey!, 'Content-Type': 'application/json' },
+      headers: { 'api-key': key, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         sender:      { name: 'NoMap Alerts', email: 'oz@flybiz.co.il' },
         to:          [{ email: 'oz@flybiz.co.il' }],
         subject:     `⚠️ NoMap - הגשה נכשלה (${type})`,
-        textContent: text,
+        textContent,
       }),
     })
     if (!r.ok) console.error('[alert-brevo] failed', r.status, await r.text())
