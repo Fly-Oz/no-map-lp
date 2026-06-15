@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+export const dynamic = 'force-dynamic'
+
 const BASE_ID  = process.env.AIRTABLE_BASE_ID!
 const API_KEY  = process.env.AIRTABLE_API_KEY!
 const AT       = `https://api.airtable.com/v0/${BASE_ID}`
