@@ -76,9 +76,11 @@ export default function FormBlock() {
       if (data.ok) {
         setSuccess(type)
       } else {
+        console.error('[form:submit-error]', { type, body, error: data.error })
         setError('משהו השתבש. נסו שוב.')
       }
-    } catch {
+    } catch (err) {
+      console.error('[form:network-error]', { type, err })
       setError('בעיית חיבור. נסו שוב.')
     } finally {
       setLoading(false)

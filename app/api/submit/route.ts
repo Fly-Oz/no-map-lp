@@ -156,7 +156,7 @@ export async function POST(req: NextRequest) {
       set(fields, 'עד מתי בתאילנד',  body.dateTo,   { onlyIfTruthy: true })
 
       if (linkedIds.length > 0) {
-        fields['מכשיר מקושר'] = linkedIds.map(id => ({ id }))
+        fields['מכשיר מקושר'] = linkedIds
       }
 
       await atPost('Pilot Applicants', fields)
