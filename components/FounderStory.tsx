@@ -1,8 +1,8 @@
 import Image from 'next/image'
 
 const founders = [
-  { name: 'עוז רוט',      role: 'Co-Founder', photo: '/founder-oz.png'  },
-  { name: 'שיר הורוביץ', role: 'Co-Founder', photo: '/founder-shir.png' },
+  { name: 'עוז רוט',      role: 'Co-Founder', photo: '/founder-oz.png',   photoAlt: '/founder-oz-alt.png'  },
+  { name: 'שיר הורוביץ', role: 'Co-Founder', photo: '/founder-shir.png', photoAlt: '/founder-shir-alt.jpg' },
 ]
 
 export default function FounderStory() {
@@ -45,6 +45,15 @@ export default function FounderStory() {
                     fill
                     style={{ objectFit: 'cover' }}
                     sizes="88px"
+                    className="founder-photo-main"
+                  />
+                  <Image
+                    src={f.photoAlt}
+                    alt={f.name}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    sizes="88px"
+                    className="founder-photo-hover"
                   />
                 </div>
                 <div className="founder-info">

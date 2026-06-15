@@ -486,6 +486,19 @@ header.site-header {
   object-fit: cover !important;
   border-radius: 50% !important;
 }
+.founder-photo-main,
+.founder-photo-hover {
+  position: absolute !important;
+  inset: 0;
+  transition: opacity 0.4s ease;
+}
+.founder-photo-hover { opacity: 0; }
+.founder-card:hover .founder-photo-hover { opacity: 1; }
+.founder-card:hover .founder-photo-main  { opacity: 0; }
+.founder-card:hover .founder-photo {
+  border-color: var(--teal-dark);
+  box-shadow: 0 6px 24px rgba(8,145,178,.32);
+}
 .founder-info h3 { font-size: .95rem; margin-bottom: 2px; }
 .founder-info p  { font-size: .82rem; color: var(--slate-400); }
 
