@@ -507,8 +507,8 @@ header.site-header {
   border-color: var(--teal-dark);
   box-shadow: 0 8px 32px rgba(8,145,178,.35);
 }
-.founder-info h3 { font-size: 1.05rem; margin-bottom: 4px; }
-.founder-info p  { font-size: .88rem; color: var(--slate-400); }
+.founder-info h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 6px; }
+.founder-info p  { font-size: 1rem; color: var(--slate-400); }
 
 /* ─── FAQ ────────────────────────────────────────────── */
 .faq-block { background: var(--bg); }

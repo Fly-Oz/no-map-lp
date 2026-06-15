@@ -17,8 +17,8 @@ export default function FounderStory() {
     const el = gridRef.current
     if (!el) return
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setInView(true) },
-      { threshold: 0.4 }
+      ([entry]) => { setInView(entry.isIntersecting) },
+      { rootMargin: '-25% 0px -25% 0px', threshold: 0 }
     )
     observer.observe(el)
     return () => observer.disconnect()
