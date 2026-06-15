@@ -80,6 +80,7 @@ function matchDevices(
 
 async function sendFailureAlert(type: string, body: unknown, error: string) {
   const key = process.env.BREVO_API_KEY
+  console.log('[alert-brevo] key present:', !!key)
   if (!key) {
     console.warn('[alert-brevo] BREVO_API_KEY not set — skipping email alert')
     return
@@ -116,8 +117,14 @@ async function sendFailureAlert(type: string, body: unknown, error: string) {
 /* ─── Test alert (remove after verifying Brevo works) ───────────────────── */
 
 export async function GET() {
+  console.log('[test-alert] GET called')
+  console.log('[test-alert] BREVO_API_KEY present:', !!process.env.BREVO_API_KEY)
   await sendFailureAlert('test', { name: 'בדיקה', email: 'oz@flybiz.co.il' }, 'זוהי הודעת בדיקה')
-  return new Response('alert sent — check your email', { status: 200 })
+  console.log('[test-alert] sendFailureAlert returned')
+  return new Response(
+    JSON.stringify({ brevoKeyPresent: !!process.env.BREVO_API_KEY }),
+    { status: 200, headers: { 'Content-Type': 'application/json' } }
+  )
 }
 
 /* ─── Route handler ─────────────────────────────────────────────────────── */
