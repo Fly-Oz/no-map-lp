@@ -55,7 +55,7 @@ export default function FounderStory() {
 
           <div className="founders-grid" ref={gridRef}>
             {founders.map((f, i) => {
-              const flipped = inView || hovered === i
+              const flipped = inView !== (hovered === i)
               return (
                 <div
                   key={f.name}
