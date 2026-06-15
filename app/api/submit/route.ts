@@ -113,6 +113,13 @@ async function sendFailureAlert(type: string, body: unknown, error: string) {
   }
 }
 
+/* ─── Test alert (remove after verifying Brevo works) ───────────────────── */
+
+export async function GET() {
+  await sendFailureAlert('test', { name: 'בדיקה', email: 'oz@flybiz.co.il' }, 'זוהי הודעת בדיקה')
+  return new Response('alert sent — check your email', { status: 200 })
+}
+
 /* ─── Route handler ─────────────────────────────────────────────────────── */
 
 // Helper: only add field to object if value is non-empty
