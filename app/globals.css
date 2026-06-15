@@ -486,15 +486,29 @@ header.site-header {
   object-fit: cover !important;
   border-radius: 50% !important;
 }
+.founder-photo {
+  perspective: 600px;
+}
+.founder-photo-inner {
+  position: absolute !important;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50%;
+}
+.founder-card:hover .founder-photo-inner {
+  transform: rotateY(180deg);
+}
 .founder-photo-main,
 .founder-photo-hover {
   position: absolute !important;
   inset: 0;
-  transition: opacity 0.4s ease;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
-.founder-photo-hover { opacity: 0; }
-.founder-card:hover .founder-photo-hover { opacity: 1; }
-.founder-card:hover .founder-photo-main  { opacity: 0; }
+.founder-photo-hover {
+  transform: rotateY(180deg);
+}
 .founder-card:hover .founder-photo {
   border-color: var(--teal-dark);
   box-shadow: 0 6px 24px rgba(8,145,178,.32);

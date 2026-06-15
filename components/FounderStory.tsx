@@ -39,22 +39,24 @@ export default function FounderStory() {
             {founders.map((f) => (
               <div key={f.name} className="founder-card">
                 <div className="founder-photo">
-                  <Image
-                    src={f.photo}
-                    alt={f.name}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                    sizes="88px"
-                    className="founder-photo-main"
-                  />
-                  <Image
-                    src={f.photoAlt}
-                    alt={f.name}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                    sizes="88px"
-                    className="founder-photo-hover"
-                  />
+                  <div className="founder-photo-inner">
+                    <Image
+                      src={f.photo}
+                      alt={f.name}
+                      fill
+                      style={{ objectFit: 'cover' }}
+                      sizes="120px"
+                      className="founder-photo-main"
+                    />
+                    <Image
+                      src={f.photoAlt}
+                      alt={f.name}
+                      fill
+                      style={{ objectFit: 'cover' }}
+                      sizes="120px"
+                      className="founder-photo-hover"
+                    />
+                  </div>
                 </div>
                 <div className="founder-info">
                   <h3>{f.name}</h3>
